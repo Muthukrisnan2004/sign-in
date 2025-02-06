@@ -1,19 +1,16 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 @InputType()
 export class CreateBookInput {
-  @Field()
-  @IsNotEmpty()
-  @IsString()
+  @Field(() => String)
   title: string;
 
-  @Field()
-  @IsNotEmpty()
-  @IsString()
+  @Field(() => String)
   author: string;
 
-  @Field({ nullable: true })
-  @IsString()
-  description?: string;
+  @Field()
+  price: number;
+
+  // Add other fields as needed
 }

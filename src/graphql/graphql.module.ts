@@ -1,22 +1,25 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 import { GraphqlService } from './graphql.service';
 import { GraphqlResolver } from './graphql.resolver';
-import { PrismaModule } from 'prisma/prisma.module';
-import { JwtStrategy } from '../auth/jwt.strategy';
-
+import { Book, BookSchema } from './schemas/book.schema';
 
 @Module({
   imports: [
+    MongooseModule.forFeature([
+      { name: Book.name, schema: BookSchema }
+    ]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
-      context: ({ req,res }) => ({ req,res }),
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
       playground: true,
     }),
-    PrismaModule,
   ],
-  providers: [GraphqlService, GraphqlResolver, JwtStrategy],
+  providers: [GraphqlService, GraphqlResolver],
+  exports: [GraphqlService]
 })
 export class GraphqlModule {}

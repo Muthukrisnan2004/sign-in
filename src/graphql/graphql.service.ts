@@ -1,51 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Book } from './schemas/book.schema';
 import { CreateBookInput } from './dto/create-book.input';
-import { Book } from './entities/book.entity';
+
+export type BookDocument = Book & Document;
 
 @Injectable()
 export class GraphqlService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @InjectModel(Book.name) private bookModel: Model<BookDocument>
+  ) {}
 
-  async createBook(createBookInput: CreateBookInput): Promise<Book> {
-    const book = await this.prisma.book.create({
-      data: createBookInput,
-    });
-    return this.transformBook(book);
+  async create(createBookInput: CreateBookInput): Promise<Book> {
+    const createdBook = new this.bookModel(createBookInput);
+    return createdBook.save();
   }
 
-  async findAllBooks(): Promise<Book[]> {
-    const books = await this.prisma.book.findMany();
-    return books.map(this.transformBook);
+  async findAllBooks() {
+    return this.bookModel.find().exec();
   }
 
-  async findOneBook(id: string): Promise<Book> {
-    const book = await this.prisma.book.findUnique({
-      where: { id },
-    });
-    if (!book) throw new Error('Book not found');
-    return this.transformBook(book);
+  async findOneBook(id: string) {
+    return this.bookModel.findById(id).exec();
   }
 
-  async updateBook(id: string, updateBookInput: CreateBookInput): Promise<Book> {
-    const book = await this.prisma.book.update({
-      where: { id },
-      data: updateBookInput,
-    });
-    return this.transformBook(book);
+  async updateBook(id: string, updateBookInput: any) {
+    return this.bookModel
+      .findByIdAndUpdate(id, updateBookInput, { new: true })
+      .exec();
   }
 
-  async removeBook(id: string): Promise<Book> {
-    const book = await this.prisma.book.delete({
-      where: { id },
-    });
-    return this.transformBook(book);
-  }
-
-  private transformBook(book: any): Book {
-    return {
-      ...book,
-      description: book.description || undefined,
-    };
+  async removeBook(id: string) {
+    return this.bookModel.findByIdAndDelete(id).exec();
   }
 }

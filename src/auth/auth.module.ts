@@ -6,16 +6,17 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { SessionSerializer } from './session.serializer';
 import { AuthController } from './auth.controller';
-import { PrismaModule } from 'prisma/prisma.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from '../schemas/user.schema';
 
 @Module({
   imports: [
-    PrismaModule,
     PassportModule.register({ defaultStrategy: 'jwt', session: true }),
     JwtModule.register({
       secret: 'your-jwt-secret',
       signOptions: { expiresIn: '60m' },
     }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [AuthController],
   providers: [

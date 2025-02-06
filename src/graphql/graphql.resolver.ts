@@ -8,7 +8,7 @@ import { GqlAuthGuard } from './gql-auth.guard';
 
 
 @Resolver(() => Book)
-@UseGuards(GqlAuthGuard)
+// @UseGuards(GqlAuthGuard)
 export class GraphqlResolver {
   constructor(private readonly graphqlService: GraphqlService) {}
 
@@ -24,7 +24,7 @@ export class GraphqlResolver {
 
   @Mutation(() => Book)
   createBook(@Args('createBookInput') createBookInput: CreateBookInput) {
-    return this.graphqlService.createBook(createBookInput);
+    return this.graphqlService.create(createBookInput);
   }
 
   @Mutation(() => Book)

@@ -9,6 +9,12 @@ import * as Store from 'connect-redis';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Trust first proxy
+  app.use((req, _res, next) => {
+    req.headers['x-real-ip'] = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    next();
+  });
+
   app.enableCors({
     origin: true,
     credentials: true,
