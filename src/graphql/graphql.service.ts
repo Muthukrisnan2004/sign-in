@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Book } from './schemas/book.schema';
+import { Book, BookDocument } from './schemas/book.schema';
 import { CreateBookInput } from './dto/create-book.input';
-
-export type BookDocument = Book & Document;
+import { AuthorBookCount, PriceStats } from './dto/aggregation.types';
 
 @Injectable()
 export class GraphqlService {
@@ -33,5 +32,48 @@ export class GraphqlService {
 
   async removeBook(id: string) {
     return this.bookModel.findByIdAndDelete(id).exec();
+  }
+
+  async getTotalBooks(): Promise<number> {
+    return this.bookModel.countDocuments().exec();
+  }
+
+  async getBooksByAuthor(): Promise<AuthorBookCount[]> {
+    const result = await this.bookModel.aggregate([
+      {
+        $group: {
+          _id: '$author',
+          bookCount: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          author: '$_id',
+          bookCount: 1
+        }
+      }
+    ]).exec();
+    return result;
+  }
+
+  async getBookPriceStats(): Promise<PriceStats> {
+    const [result] = await this.bookModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          maxPrice: { $max: '$price' },
+          minPrice: { $min: '$price' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          maxPrice: 1,
+          minPrice: 1
+        }
+      }
+    ]).exec();
+    return result || { maxPrice: 0, minPrice: 0 };
   }
 }

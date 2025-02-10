@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { jwtSecret } from '../utils/constants';
+import { Token } from 'graphql';
 
 @Injectable()
 export class AuthService {
@@ -66,12 +67,12 @@ export class AuthService {
 
     res.cookie('token', token);
 
-    return res.send({ message: 'Logged in successfully' });
+    return res.send({ message: 'Logged in successfully' ,token });
   }
 
-  async signout(req: Request, res: Response) {
+  async signout(req: Request, res: Response) { 
     res.clearCookie('token');
-    return res.send({ message: 'Logged out successfully' });
+    return res.send({ message: 'Logged out successfully'});
   }
 
   async hashPassword(password: string) {

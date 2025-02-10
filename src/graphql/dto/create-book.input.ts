@@ -3,7 +3,7 @@ import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 @InputType()
 export class CreateBookInput {
-  @Field(() => String)
+  @Field(() => String)          
   title: string;
 
   @Field(() => String)

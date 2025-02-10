@@ -1,14 +1,15 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { GraphqlService } from './graphql.service';
-import { Book } from './entities/book.entity';
+import { Book } from './schemas/book.schema';
 import { CreateBookInput } from './dto/create-book.input';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+
+import { AuthorBookCount, PriceStats } from './dto/aggregation.types';
 import { GqlAuthGuard } from './gql-auth.guard';
 
-
 @Resolver(() => Book)
-// @UseGuards(GqlAuthGuard)
+@UseGuards(GqlAuthGuard)  // autheroized user can only see
 export class GraphqlResolver {
   constructor(private readonly graphqlService: GraphqlService) {}
 
@@ -38,5 +39,20 @@ export class GraphqlResolver {
   @Mutation(() => Book)
   removeBook(@Args('id') id: string) {
     return this.graphqlService.removeBook(id);
+  }
+
+  @Query(() => Number, { name: 'totalBooks' })
+  async getTotalBooks() {
+    return this.graphqlService.getTotalBooks();
+  }
+
+  @Query(() => [AuthorBookCount], { name: 'booksByAuthor' })
+  async getBooksByAuthor() {
+    return this.graphqlService.getBooksByAuthor();
+  }
+
+  @Query(() => PriceStats, { name: 'bookPriceStats' })
+  async getBookPriceStats() {
+    return this.graphqlService.getBookPriceStats();
   }
 }

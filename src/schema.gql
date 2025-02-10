@@ -2,13 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthorBookCount {
+  author: String!
+  bookCount: Int!
+}
+
 type Book {
   author: String!
   createdAt: DateTime!
-  description: String
   id: ID!
+  price: Float!
   title: String!
-  updatedAt: DateTime!
 }
 
 input CreateBookInput {
@@ -28,7 +32,15 @@ type Mutation {
   updateBook(id: String!, updateBookInput: CreateBookInput!): Book!
 }
 
+type PriceStats {
+  maxPrice: Float!
+  minPrice: Float!
+}
+
 type Query {
   book(id: String!): Book!
+  bookPriceStats: PriceStats!
   books: [Book!]!
+  booksByAuthor: [AuthorBookCount!]!
+  totalBooks: Float!
 }
