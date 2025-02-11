@@ -84,16 +84,142 @@ Check out a few resources that may come in handy when working with NestJS:
 - To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
 - Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-## Support
+# Book Management System
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Project Overview
+This project is a full-stack Book Management System that provides robust features for managing a collection of books, user authentication, and analytics. The project consists of a backend built using NestJS and a frontend developed with React. MongoDB is used as the database.
 
-## Stay in touch
+## Table of Contents
+1. [Project Structure](#project-structure)
+2. [Backend Features](#backend-features)
+3. [Frontend Features](#frontend-features)
+4. [Security Features](#security-features)
+5. [Configuration](#configuration)
+6. [Scripts](#scripts)
+7. [Setup Instructions](#setup-instructions)
+8. [Usage](#usage)
+9. [Technologies Used](#technologies-used)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Project Structure
+- **Backend (NestJS)**
+  - GraphQL API for book management
+  - JWT-based authentication system
+  - MongoDB integration
+  - Rate limiting implementation
 
-## License
+- **Frontend (React)**
+  - Basic setup using Create React App
+  - Testing setup with Jest
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Backend Features
+### Authentication System
+- JWT-based authentication
+- Session support
+- Password hashing using bcrypt
+- Authentication endpoints:
+  - **Sign up**
+  - **Sign in**
+  - **Sign out**
+
+### GraphQL API
+- CRUD operations for book management
+- Book statistics and price aggregations
+- Author aggregations
+- Schema defined in `schema.gql`
+
+### Security Features
+- Rate limiting using `http-throttler.guard.ts`
+- JWT authentication guard
+
+### Database Integration
+- MongoDB integration using Mongoose
+- Schemas:
+  - User schema (`user.schema.ts`)
+  - Book schema (`book.schema.ts`)
+
+## Frontend Features
+- Basic React setup using Create React App
+- Testing setup with Jest
+- Web vitals reporting
+- Static assets handling
+
+## Configuration
+- TypeScript configuration in `tsconfig.json`
+- ESLint configuration in `eslint.config.mjs`
+- Prettier configuration in `.prettierrc`
+
+## Scripts
+### Backend
+```json
+{
+  "build": "nest build",
+  "start": "nest start",
+  "start:dev": "nest start --watch",
+  "start:debug": "nest start --debug --watch",
+  "start:prod": "node dist/main"
+}
+```
+
+### Frontend
+```json
+{
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+}
+```
+
+## Setup Instructions
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository-url>
+   cd book-management-system
+   ```
+
+2. **Backend Setup:**
+   ```bash
+   cd backend
+   npm install
+   npm run start:dev
+   ```
+
+3. **Frontend Setup:**
+   ```bash
+   cd ../frontend
+   npm install
+   npm start
+   ```
+
+4. **Environment Configuration:**
+   - Create a `.env` file in the backend directory and specify the following variables:
+     ```env
+     MONGO_URI=<your-mongodb-uri>
+     JWT_SECRET=<your-jwt-secret>
+     ```
+
+## Usage
+1. **Access the Frontend:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
+
+2. **Access the Backend GraphQL Playground:**
+   Navigate to [http://localhost:5000/graphql](http://localhost:5000/graphql).
+
+3. **User Authentication:**
+   - Sign up, sign in, and manage user sessions via the frontend or GraphQL API.
+
+4. **Manage Books:**
+   - Perform CRUD operations on books, retrieve analytics, and explore book statistics.
+
+## Technologies Used
+- **Backend:** NestJS, GraphQL, MongoDB, Mongoose, JWT
+- **Frontend:** React, Create React App, Jest
+- **Security:** bcrypt, rate limiting, JWT guards
+
+This project offers a robust system for book management with modern authentication and security practices, making it scalable and secure for production use.
+
+
+
+
+
+
