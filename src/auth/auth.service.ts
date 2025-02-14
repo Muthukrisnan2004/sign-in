@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../schemas/user.schema';
@@ -8,12 +8,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { jwtSecret } from '../utils/constants';
 import { Token } from 'graphql';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private jwt: JwtService
+    private jwt: JwtService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createUserInput: CreateUserDto): Promise<User> {
@@ -44,6 +46,7 @@ export class AuthService {
     const foundUser = await this.findByEmail(email);
 
     if (!foundUser) {
+      await this.emailService.sendLoginAttemptWarning(email);
       throw new BadRequestException('Wrong credentials');
     }
     const isMatch = await this.comparePasswords({
@@ -52,6 +55,7 @@ export class AuthService {
     });
 
     if (!isMatch) {
+      await this.emailService.sendLoginAttemptWarning(email);
       throw new BadRequestException('Wrong credentials');
     }
 
@@ -66,6 +70,7 @@ export class AuthService {
     }
 
     res.cookie('token', token);
+    await this.emailService.sendLoginSuccessEmail(email);
 
     return res.send({ message: 'Logged in successfully' ,token });
   }

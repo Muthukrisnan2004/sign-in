@@ -8,6 +8,7 @@ import { SessionSerializer } from './session.serializer';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../schemas/user.schema';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User, UserSchema } from '../schemas/user.schema';
       signOptions: { expiresIn: '60m' },
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    EmailModule,
   ],
   controllers: [AuthController],
   providers: [
@@ -26,4 +28,4 @@ import { User, UserSchema } from '../schemas/user.schema';
   ],
   exports: [AuthService, PassportModule, JwtModule],
 })
-export class AuthModule {}   
+export class AuthModule {}
